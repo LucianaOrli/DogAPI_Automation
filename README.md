@@ -37,8 +37,7 @@ Como rodar: pip install behave requests e depois behave.
     ```
 
 3.  **Visualizar Resultados:**
-    Os resultados detalhados de cada cenário (Pass/Fail) serão exibidos diretamente no console após a execução do comando acima.
+    Os resultados detalhados de cada cenário (Pass/Fail)"Relatório gerado em HTML via pytest-html".após a execução do comando acima.
 
----
 **Desenvolvido  por Luciana Orli (Lux by Or) 💎🛡️**
 
