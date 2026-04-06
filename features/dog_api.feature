@@ -14,7 +14,14 @@ Funcionalidade: Validação da Dog API
     Então o código de status da resposta deve ser 200
     E a lista de imagens não deve estar vazia
 
-  Cenário: 03 - Buscar uma imagem aleatória (GET /image/random)
+  Cenário: 03 - Buscar uma imagem aleatória e validar Schema (GET /image/random)
     Dado que eu solicito uma imagem aleatória de qualquer cão
     Então o código de status da resposta deve ser 200
-    E o campo "message" deve conter uma URL válida de imagem
+    E o campo "status" deve conter "success"
+    E o campo "message" deve conter uma URL de imagem válida (string e formato seguro)
+
+  Cenário: 04 - Buscar raça de cachorro inexistente (Cenário Negativo)
+    Dado que eu busco as imagens da raça "raca_que_nao_existe"
+    Então o código de status da resposta deve ser 404
+    E o campo "status" deve conter "error"
+    E a mensagem de erro deve ser "Breed not found (master breed does not exist)"
