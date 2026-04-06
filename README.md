@@ -7,7 +7,7 @@ Descrição: Validação dos endpoints de listagem de raças e imagens da Dog AP
 Tecnologias: Python 3, Behave (Gherkin), Requests.
 Destaque: "Projeto estruturado com Gherkin para facilitar a leitura por analistas de negócio e desenvolvedores de outras linguagens."
 Como rodar: pip install behave requests e depois behave.
-# 🐶 Dog API Automation (Questão 2)
+
 
 **Objetivo:** Validar a integridade dos endpoints da Dog CEO API através de testes de integração e contrato utilizando BDD.
 
