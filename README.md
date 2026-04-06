@@ -1,4 +1,4 @@
-3. 🐶 Dog API Automation 
+🐶 Dog API Automation 
 
 Focado em Integração e BDD.
 Título: 🐶 Dog API Automation - BDD Framework
