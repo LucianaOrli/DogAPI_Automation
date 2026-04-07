@@ -1,3 +1,5 @@
+# language: pt
+
 Funcionalidade: Validação da Dog API
 
 Cenário: Listar sub-raças de um Terrier
