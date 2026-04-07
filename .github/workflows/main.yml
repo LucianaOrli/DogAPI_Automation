@@ -26,11 +26,11 @@ jobs:
 
       - name: Executar Testes
         run: |
-          # Executa os testes e exibe no log do GitHub
+          # O comando 'behave' varre a pasta features automaticamente
           behave
 
       - name: Generate Summary
         if: always()
         run: |
           echo "### 🚀 Resultado dos Testes Dog API" >> $GITHUB_STEP_SUMMARY
-          echo "Os testes de BDD foram executados com sucesso no ambiente de CI." >> $GITHUB_STEP_SUMMARY
+          echo "Os testes de BDD foram executados e validados no GitHub Actions." >> $GITHUB_STEP_SUMMARY
