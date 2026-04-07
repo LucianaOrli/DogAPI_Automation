@@ -26,17 +26,15 @@ jobs:
 
       - name: Executar Testes
         run: |
-          # Geramos o log em formato JSON para o script ler depois
           behave -f json -o report.json
-        continue-on-error: true # Importante para o resumo rodar mesmo se o teste falhar
+        continue-on-error: true
 
-      - name: Gerar Resumo Visual (Job Summary)
+      - name: Gerar Resumo Visual
         if: always()
         run: |
           echo "### 📊 Resumo da Execução - Dog API" >> $GITHUB_STEP_SUMMARY
           echo "| Cenário | Status | Duração |" >> $GITHUB_STEP_SUMMARY
           echo "| :--- | :--- | :--- |" >> $GITHUB_STEP_SUMMARY
-          
           python -c "
           import json
           try:
@@ -45,10 +43,9 @@ jobs:
                   for feature in data:
                       for scenario in feature.get('elements', []):
                           status = '✅ PASSED' if scenario.get('status') == 'passed' else '❌ FAILED'
-                          # O Behave retorna duração em segundos, ajustamos para exibição
                           steps = scenario.get('steps', [])
                           duration = round(sum(s.get('result', {}).get('duration', 0) for s in steps), 2)
                           print(f'| {scenario[\"name\"]} | {status} | {duration}s |')
           except Exception as e:
-              print(f'| Erro ao processar relatório | - | {e} |')
+              print(f'| Erro no Relatório | - | {e} |')
           " >> $GITHUB_STEP_SUMMARY
