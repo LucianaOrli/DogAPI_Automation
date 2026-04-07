@@ -10,4 +10,4 @@ Cenário: Listar sub-raças de um Terrier
 Cenário: Consultar raça inexistente
     Dado que eu consulto uma raça chamada "dragao"
     Então o status code deve ser 404
-    E a mensagem de erro deve ser "Breed not found (master breed does not exist)"
+    E a mensagem de erro deve ser "Breed not found (main breed does not exist)"
