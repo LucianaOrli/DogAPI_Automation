@@ -1,9 +1,34 @@
-- name: Executar Testes
+name: Dog API BDD CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
         run: |
+          python -m pip install --upgrade pip
           pip install behave requests
+
+      - name: Executar Testes
+        run: |
           # Geramos o log em formato JSON para o script ler depois
           behave -f json -o report.json
-        continue-on-error: true # Importante: para o resumo rodar mesmo se o teste falhar
+        continue-on-error: true # Importante para o resumo rodar mesmo se o teste falhar
 
       - name: Gerar Resumo Visual (Job Summary)
         if: always()
@@ -12,17 +37,18 @@
           echo "| Cenário | Status | Duração |" >> $GITHUB_STEP_SUMMARY
           echo "| :--- | :--- | :--- |" >> $GITHUB_STEP_SUMMARY
           
-          # Este comando extrai o nome do cenário, o status e o tempo do JSON
           python -c "
           import json
           try:
               with open('report.json') as f:
                   data = json.load(f)
                   for feature in data:
-                      for scenario in feature['elements']:
-                          status = '✅ PASSED' if scenario['status'] == 'passed' else '❌ FAILED'
-                          duration = round(sum(s.get('result', {}).get('duration', 0) for s in scenario['steps']), 2)
+                      for scenario in feature.get('elements', []):
+                          status = '✅ PASSED' if scenario.get('status') == 'passed' else '❌ FAILED'
+                          # O Behave retorna duração em segundos, ajustamos para exibição
+                          steps = scenario.get('steps', [])
+                          duration = round(sum(s.get('result', {}).get('duration', 0) for s in steps), 2)
                           print(f'| {scenario[\"name\"]} | {status} | {duration}s |')
-          except Exception:
-              print('| Erro ao gerar relatório | - | - |')
+          except Exception as e:
+              print(f'| Erro ao processar relatório | - | {e} |')
           " >> $GITHUB_STEP_SUMMARY
