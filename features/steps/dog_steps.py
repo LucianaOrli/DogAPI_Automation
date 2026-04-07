@@ -1,63 +1,27 @@
 import requests
 import re
-from behave import given, when, then
+from behave import given, then
 
 BASE_URL = "https://dog.ceo/api"
 
-@given('que eu acesso o endpoint de listagem de todas as raças')
-def step_list_all(context):
-    context.response = requests.get(f"{BASE_URL}/breeds/list/all")
+@given('que eu consulto a lista de sub-raças da raça "{raca}"')
+def step_list_sub_breeds(context, raca):
+    context.response = requests.get(f"{BASE_URL}/breed/{raca}/list")
 
-@given('que eu busco as imagens da raça "{raca}"')
-def step_list_images(context, raca):
-    # Ajustado para buscar imagem aleatória da raça (conforme o .feature novo)
-    context.response = requests.get(f"{BASE_URL}/breed/{raca}/images/random")
+@given('que eu consulto uma raça chamada "{raca}"')
+def step_query_invalid_breed(context, raca):
+    context.response = requests.get(f"{BASE_URL}/breed/{raca}/images")
 
-@when('eu envio a requisição GET')
-def step_send_get(context):
-    # O Behave já executou o GET no Given, mas mantemos para compatibilidade do Gherkin
-    pass
+@then('o status code deve ser {code:d}')
+def step_check_status_code(context, code):
+    assert context.response.status_code == code
 
-@given('que eu solicito uma imagem aleatória de qualquer cão')
-def step_random_image(context):
-    context.response = requests.get(f"{BASE_URL}/breeds/image/random")
-
-@then('o código de status da resposta deve ser {status:d}')
-def step_check_status(context, status):
-    assert context.response.status_code == status
-
-@then('o campo "{campo}" deve conter "{valor}"')
-def step_check_field_value(context, campo, valor):
+@then('a lista de sub-raças não deve estar vazia')
+def step_check_sub_breeds_not_empty(context):
     data = context.response.json()
-    assert data[campo] == valor, f"Esperava {valor}, mas veio {data[campo]}"
+    assert len(data['message']) > 0
 
-@then('a mensagem de erro deve ser "{msg}"')
-def step_check_error_msg(context, msg):
+@then('a mensagem de erro deve ser "{mensagem}"')
+def step_check_error_message(context, mensagem):
     data = context.response.json()
-    assert data["message"] == msg
-
-@then('o corpo da resposta deve conter a lista de raças com status "success"')
-def step_check_success(context):
-    data = context.response.json()
-    assert data["status"] == "success"
-
-@then('a lista de imagens não deve estar vazia')
-def step_check_images_not_empty(context):
-    data = context.response.json()
-    assert len(data["message"]) > 0
-
-# --- CORREÇÃO DO PONTO 3 (SCHEMA, TIPAGEM E REGEX) ---
-@then('o campo "message" deve conter uma URL de imagem válida (string e formato seguro)')
-def step_check_url_schema(context):
-    data = context.response.json()
-    url = data["message"]
-    
-    # 1. Validação de Tipagem (Ponto 3)
-    assert isinstance(url, str), "A URL deve ser uma string"
-    
-    # 2. Validação de Formato Seguro (Ponto 3)
-    assert url.startswith("https://"), "A URL deve usar HTTPS"
-    
-    # 3. Validação de Extensão via REGEX (Ponto 3)
-    padrao_imagem = r"\.(jpg|jpeg|png)$"
-    assert re.search(padrao_imagem, url.lower()), f"URL {url} não possui formato de imagem válido"
+    assert data['message'] == mensagem
