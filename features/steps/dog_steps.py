@@ -20,9 +20,19 @@ def step_check_status_code(context, code):
 
 @then('a lista de sub-raças não deve estar vazia')
 def step_check_sub_breeds_not_empty(context):
-    data = context.response.json()
-    # Verifica se a lista dentro da chave 'message' contém itens
-    assert len(data['message']) > 0
+    try:
+        # Tenta transformar a resposta em JSON
+        data = context.response.json()
+        # Busca a chave 'message', se não existir, retorna uma lista vazia []
+        sub_racas = data.get('message', [])
+        
+        # Valida se é uma lista e se tem mais de zero itens
+        assert isinstance(sub_racas, list), "O campo 'message' não é uma lista!"
+        assert len(sub_racas) > 0, "A lista de sub-raças retornou vazia (0 itens)."
+        
+    except ValueError:
+        # Se a API retornar um erro de HTML ou texto em vez de JSON, o teste falha aqui
+        assert False, "A API não retornou um JSON válido (Erro de formato)."
 
 @then('a mensagem de erro deve ser "{mensagem}"')
 def step_check_error_message(context, mensagem):
