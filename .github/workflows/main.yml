@@ -1,4 +1,36 @@
-- name: Executar Testes
-  run: |
-    pip install behave requests
-    behave
+name: Dog API BDD CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install behave requests
+
+      - name: Executar Testes
+        run: |
+          # Executa os testes e exibe no log do GitHub
+          behave
+
+      - name: Generate Summary
+        if: always()
+        run: |
+          echo "### 🚀 Resultado dos Testes Dog API" >> $GITHUB_STEP_SUMMARY
+          echo "Os testes de BDD foram executados com sucesso no ambiente de CI." >> $GITHUB_STEP_SUMMARY
